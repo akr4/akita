@@ -7,6 +7,8 @@ import net.physalis.akita.presentation.csrf.PreventCsrf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -31,7 +33,8 @@ public class BookController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Book find(@PathVariable int id) {
-        return bookRepository.findById(new BookId(id));
+    public ResponseEntity<Book> find(@PathVariable int id) {
+        return bookRepository.findById(new BookId(id))
+                .map(o -> new ResponseEntity<>(o, HttpStatus.OK)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
