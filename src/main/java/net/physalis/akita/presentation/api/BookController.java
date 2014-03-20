@@ -1,6 +1,7 @@
 package net.physalis.akita.presentation.api;
 
 import net.physalis.akita.domain.model.Book;
+import net.physalis.akita.domain.model.BookId;
 import net.physalis.akita.domain.repository.BookRepository;
 import net.physalis.akita.presentation.csrf.PreventCsrf;
 import org.slf4j.Logger;
@@ -31,6 +32,6 @@ public class BookController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Book find(@PathVariable int id) {
-        return bookRepository.findById(id);
+        return bookRepository.findById(new BookId(id));
     }
 }
