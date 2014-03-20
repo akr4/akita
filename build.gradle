@@ -1,14 +1,17 @@
 buildscript {
   repositories {
+    mavenCentral()
     maven { url "http://repo.spring.io/libs-snapshot" }
-    mavenLocal()
   }
   dependencies {
-    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.0.0.RC4")
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:1.0.0.RC4"
+    classpath "com.github.rodionmoiseev.gradle.plugins:idea-utils:0.2"
   }
 }
 
 apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'idea-utils'
 apply plugin: 'spring-boot'
 
 jar {
@@ -54,6 +57,31 @@ dependencies {
 
   testCompile "junit:junit"
   testCompile "org.mockito:mockito-core:1.9.5"
+}
+
+idea {
+  project {
+    // customize the .ipr file generation.
+    ipr {
+      withXml { xmlProvider ->
+        def project = xmlProvider.asNode()
+
+        // Add appropriate groovy files to the compiler resources. These files will not be compiled by the groovy compiler but will be copied to the classes directory during compilation.
+        def compilerSettings = project.component.find { it.@name == 'CompilerConfiguration' }
+        compilerSettings.wildcardResourcePatterns*.appendNode('entry', [name: '*/logback*.groovy'])
+        compilerSettings.annotationProcessing*.@enabled = true
+      }
+    }
+    runConfigurations {
+      runMyApp {
+        type = "Application"
+        name = "Server"
+        mainClass = "net.physalis.akita.Application"
+        vmOptions = "-Dapp.env=dev"
+        module = project(":")
+      }
+    }
+  }
 }
 
 task start(dependsOn: "compileJava", type: JavaExec) {

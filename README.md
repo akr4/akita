@@ -8,15 +8,18 @@ Akita is a template for Java API server. It utilizes:
 - Spring Boot
 - Lombok
 
-==================
-setup dev database
-==================
+=======================
+Development Environment
+=======================
 
 ```
 createuser -DRS akita
 createdb -EUTF-8 -Oakita akita
 ```
 
+```
+gradle idea
+```
 
 ==================
 Run
