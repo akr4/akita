@@ -45,8 +45,8 @@ public class BookRepository {
         return book;
     }
 
-    public void delete(Book book) {
-        JT.update("delete from book where id = ?", book.getId());
+    public void delete(BookId id) {
+        JT.update("delete from book where id = ?", id.getValue());
     }
 
 }

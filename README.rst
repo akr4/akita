@@ -6,6 +6,7 @@ Akita is a template for Java API server. It utilizes:
 - Gradle
 - Jetty
 - Spring Boot
+- Lombok
 
 ==================
 setup dev database
@@ -24,3 +25,4 @@ Run
 ```
 gradle -Dapp.env=dev start
 ```
+
