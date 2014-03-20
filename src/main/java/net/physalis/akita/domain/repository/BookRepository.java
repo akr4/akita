@@ -19,9 +19,9 @@ public class BookRepository {
         this.JT = JT;
     }
 
-    public Book findById(int id) {
+    public Book findById(BookId id) {
         return JT.queryForObject("select * from book where id = ?",
-                new Object[]{id},
+                new Object[]{id.getValue()},
                 (rs, rowNum) -> new Book(
                         new BookId(rs.getInt("id")),
                         rs.getString("title")
@@ -31,7 +31,7 @@ public class BookRepository {
 
     public List<Book> findAll() {
         return JT.query("select id from book order by id",
-                (rs, rowNum) -> findById(rs.getInt("id")));
+                (rs, rowNum) -> findById(new BookId(rs.getInt("id"))));
     }
 
     public Book save(Book book) {
