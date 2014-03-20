@@ -39,7 +39,7 @@ public class BookRepository {
             JT.update("insert into book (id, title) values (?, ?)",
                     book.getId(), book.getTitle());
         } catch (DuplicateKeyException e) {
-            JT.update("update book set title = ?", book.getTitle());
+            JT.update("update book set title = ? where id = ?", book.getTitle(), book.getId().getValue());
         }
 
         return book;
