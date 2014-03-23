@@ -69,7 +69,7 @@ idea {
         // Add appropriate groovy files to the compiler resources. These files will not be compiled by the groovy compiler but will be copied to the classes directory during compilation.
         def compilerSettings = project.component.find { it.@name == 'CompilerConfiguration' }
         compilerSettings.wildcardResourcePatterns*.appendNode('entry', [name: '*/logback*.groovy'])
-        compilerSettings.annotationProcessing*.@enabled = true
+       compilerSettings.annotationProcessing*.appendNode('profile', [default: true, name: 'Default', enabled: true])*.appendNode('processorPath', [useClasspath: true])
       }
     }
     runConfigurations {
