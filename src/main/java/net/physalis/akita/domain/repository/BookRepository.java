@@ -3,11 +3,13 @@ package net.physalis.akita.domain.repository;
 import net.physalis.akita.domain.model.Book;
 import net.physalis.akita.domain.model.BookId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,15 +44,15 @@ public class BookRepository {
         .stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
   }
 
-  public Book save(Book book) {
-    try {
-      JT.update("insert into book (id, title) values (?, ?)",
-          book.getId(), book.getTitle());
-    } catch (DuplicateKeyException e) {
-      JT.update("update book set title = ? where id = ?", book.getTitle(), book.getId().getValue());
-    }
+  public Book create(String title) {
+    KeyHolder keyHolder = new GeneratedKeyHolder();
+    JT.update(conn -> {
+      PreparedStatement ps = conn.prepareStatement("insert into book (title) values (?)");
+      ps.setString(1, title);
+      return ps;
+    }, keyHolder);
 
-    return book;
+    return findById(new BookId(keyHolder.getKey().intValue())).get();
   }
 
   public void delete(BookId id) {
