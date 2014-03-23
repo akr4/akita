@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class BookId {
 
-    @Getter private final int value;
+  @Getter
+  private final int value;
 
 }

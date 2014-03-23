@@ -24,27 +24,27 @@ import java.util.stream.Collectors;
 @RequestMapping("/books")
 public class BookController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
-    private final BookRepository bookRepository;
+  private final BookRepository bookRepository;
 
-    @Autowired
-    public BookController(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
+  @Autowired
+  public BookController(BookRepository bookRepository) {
+    this.bookRepository = bookRepository;
+  }
+
+  @RequestMapping(value = "", method = RequestMethod.GET)
+  public List<ABook> findAll() {
+    return bookRepository.findAll().stream().map(ABook::new).collect(Collectors.toList());
+  }
+
+  @RequestMapping(value = "{id}", method = RequestMethod.GET)
+  public ResponseEntity<ABook> find(@PathVariable int id) {
+    Optional<Book> book = bookRepository.findById(new BookId(id));
+    if (book.isPresent()) {
+      return new ResponseEntity<>(new ABook(book.get()), HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<ABook> findAll() {
-        return bookRepository.findAll().stream().map(ABook::new).collect(Collectors.toList());
-    }
-
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseEntity<ABook> find(@PathVariable int id) {
-        Optional<Book> book = bookRepository.findById(new BookId(id));
-        if (book.isPresent()) {
-            return new ResponseEntity<>(new ABook(book.get()), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+  }
 }

@@ -23,60 +23,60 @@ import javax.sql.DataSource;
 @ComponentScan
 public class Application {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-    public static void main(String[] args) {
-      SpringApplication.run(Application.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 
-    @Autowired
-    private Flyway flyway;
+  @Autowired
+  private Flyway flyway;
 
-    @PostConstruct
-    public void initLogger() {
-        LogbackInitializer.init();
-    }
+  @PostConstruct
+  public void initLogger() {
+    LogbackInitializer.init();
+  }
 
-    @PostConstruct
-    public void migrateDb() {
-        flyway.migrate();
-    }
+  @PostConstruct
+  public void migrateDb() {
+    flyway.migrate();
+  }
 
-    @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
-    }
+  @Bean
+  public PlatformTransactionManager transactionManager(DataSource dataSource) {
+    return new DataSourceTransactionManager(dataSource);
+  }
 
-    @Bean
-    public DataSource dataSource() {
-        BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName("org.postgresql.Driver");
-        ds.setUrl("jdbc:postgresql://localhost/akita");
-        ds.setUsername("akita");
-        ds.setPassword("");
-        ds.setPassword("");
-        ds.setMaxActive(10);
-        ds.setMaxIdle(5);
-        ds.setInitialSize(5);
-        ds.setValidationQuery("select current_timestamp");
-        ds.setDefaultAutoCommit(false);
-        return new TransactionAwareDataSourceProxy(ds);
-    }
+  @Bean
+  public DataSource dataSource() {
+    BasicDataSource ds = new BasicDataSource();
+    ds.setDriverClassName("org.postgresql.Driver");
+    ds.setUrl("jdbc:postgresql://localhost/akita");
+    ds.setUsername("akita");
+    ds.setPassword("");
+    ds.setPassword("");
+    ds.setMaxActive(10);
+    ds.setMaxIdle(5);
+    ds.setInitialSize(5);
+    ds.setValidationQuery("select current_timestamp");
+    ds.setDefaultAutoCommit(false);
+    return new TransactionAwareDataSourceProxy(ds);
+  }
 
-    @Bean
-    public Flyway flyway(DataSource dataSource) {
-        flyway = new Flyway();
-        flyway.setDataSource(dataSource);
-        return flyway;
-    }
+  @Bean
+  public Flyway flyway(DataSource dataSource) {
+    flyway = new Flyway();
+    flyway.setDataSource(dataSource);
+    return flyway;
+  }
 
-    @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
-    }
+  @Bean
+  public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+    return new JdbcTemplate(dataSource);
+  }
 
-    @Bean
-    public MdcFilter mdcFilter() {
-        return new MdcFilter();
-    }
+  @Bean
+  public MdcFilter mdcFilter() {
+    return new MdcFilter();
+  }
 }
